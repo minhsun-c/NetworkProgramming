@@ -4,9 +4,8 @@
 void myprintenv();
 
 void mysetenv(char *param);
-
 void free_env();
-char **find_name(char *name);
+char **find_env_name(char *name);
 bool read_env();
 
 #endif

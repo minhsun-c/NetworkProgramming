@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <unistd.h>
+#include <sys/stat.h>
 
 #define MYSETENV (461719610)
 #define MYPRINTENV (484770843)
