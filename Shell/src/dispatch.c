@@ -3,7 +3,7 @@
 void dispatch(command_t *cmd)
 {
     char *command = cmd->command;
-    char *param = cmd->paramater;
+    char *param = cmd->parameter;
     switch (hash(command))
     {
     case MYPRINTENV:

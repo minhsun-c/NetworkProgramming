@@ -11,7 +11,7 @@ command_t *parser(char *commandStr)
         perror("Memory allocate error");
     sscanf(commandStr, "%s", cmd->command);
     int x = strlen(cmd->command) + 1;
-    sscanf(commandStr + x, "%[^\n]", cmd->paramater);
+    sscanf(commandStr + x, "%[^\n]", cmd->parameter);
     return cmd;
 }
 

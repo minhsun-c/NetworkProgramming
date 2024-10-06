@@ -7,12 +7,14 @@ extern char **myenviron;
 char **next_empty;
 bool written = true;
 
-char **find_name(char *name)
+char **find_env_name(char *name)
 {
     size_t name_len = strlen(name);
     for (char **env = myenviron; *env; ++env)
     {
-        if (strncmp(*env, name, name_len) == 0 && (*env)[name_len] == '=')
+        if (
+            strncmp(*env, name, name_len) == 0 &&
+            (*env)[name_len] == '=')
             return env;
     }
     return NULL;
@@ -80,6 +82,7 @@ bool read_env()
     {
         if ((*env = (char *)malloc(MAX_LINE_COUNT)) == NULL)
         {
+            free_env();
             perror("Memory allocated failed");
             return false;
         }
@@ -158,7 +161,7 @@ void mysetenv(char *param)
         perror("Parameter not included =");
         return;
     }
-    if ((target = find_name(name)) == NULL)
+    if ((target = find_env_name(name)) == NULL)
         write_env(name, value);
     else
         update_env(target, value);
