@@ -7,7 +7,7 @@ OBJS = $(patsubst src/%.c, obj/%.o, $(SRCS))
 all: myshell
 
 myshell: $(OBJS)
-	$(CC) $(CFLAGS) -o bin/$@ $^
+	$(CC) $(CFLAGS) $(INC) -o bin/$@ $^
 
 # $@: myshell
 # $^: $(OBJS)
