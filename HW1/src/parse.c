@@ -77,6 +77,7 @@ static void print_command(command_t *command)
     {
         printf("command name: %s\n", command->data.name);
         printf("numberpipe: %d\n", command->numberpipe);
+        printf("param count: %d\n", command->data.param_count);
         printf("param:\n");
         for (int i = 0; i < command->data.param_count; i++)
             printf("  %s\n", command->data.parameter[i]);

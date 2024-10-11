@@ -15,6 +15,9 @@
 #define MAX_ENV_NAME_SIZE 10 // maximum size of env variable name
 #define MAX_ENV_DATA_SIZE 32 // maximum size of env variable data
 
+#define PIPE_READ_END 0
+#define PIPE_WRITE_END 1
+
 typedef struct command_data
 {
     char name[MAX_COMMAND_NAME_SIZE];
@@ -45,3 +48,6 @@ typedef struct env
 command_t *parse_input(char *input);
 int match_function(command_t *command);
 env_t *construct_env();
+void myprintenv(env_t *environ, char *name);
+int bin_handler(command_t *command);
+env_t *mysetenv(env_t *environ, char *param);
