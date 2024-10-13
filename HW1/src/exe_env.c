@@ -134,9 +134,9 @@ env_t *construct_env()
         environ->list[i]->next = NULL;
     }
     strcpy(environ->name[0], "PATH");
+    insert_env_node(environ->list[0], "./bin");
     insert_env_node(environ->list[0], "/bin");
     insert_env_node(environ->list[0], "/usr/bin");
-    insert_env_node(environ->list[0], "./bin");
     environ->next_empty = 1;
     return environ;
 }

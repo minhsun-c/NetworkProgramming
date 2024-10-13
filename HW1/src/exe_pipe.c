@@ -40,11 +40,16 @@ static int child_command(command_t *command, int fd[], int RorW)
         }
         break;
     case IS_BUILTIN_COMMAND:
-        command->data.fptr(command->data.parameter[0]);
+        if (command->data.param_count == 0)
+            command->data.fptr(NULL);
+        else
+            command->data.fptr(command->data.parameter[0]);
+
         break;
     default:
         break;
     }
+    exit(EXIT_SUCCESS);
     return 1;
 }
 

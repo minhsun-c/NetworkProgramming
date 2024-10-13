@@ -7,23 +7,23 @@ static void print_builtin_command()
     builtin_command_t *ptr = builtin;
     while (ptr)
     {
-        printf("\t%s\n", ptr->name);
+        printf("    %s\n", ptr->name);
         ptr = ptr->next;
     }
 }
 
 void myhelp(void *param)
 {
-    printf("\nCommands List:\n");
+    printf("  Commands List:\n");
     print_builtin_command();
-    printf("\tcommand in bin\n");
-    printf("\tnormal pipe\n");
-    printf("\tnumber pipe\n");
+    printf("    command in bin\n");
+    printf("    normal pipe\n");
+    printf("    number pipe\n");
 }
 
 void myquit(void *param)
 {
-    printf("\nClose Shell\n");
+    printf("  Close Shell\n");
     exit(EXIT_SUCCESS);
 }
 
@@ -63,7 +63,7 @@ builtin_command_t *find_builtin_command(char *name)
     builtin_command_t *ptr = builtin;
     while (ptr)
     {
-        if (strncmp(name, ptr->name, strlen(name)) == 0)
+        if (strncmp(name, ptr->name, strlen(ptr->name)) == 0)
             return ptr;
         ptr = ptr->next;
     }

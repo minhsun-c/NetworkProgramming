@@ -27,7 +27,7 @@ int main()
 int main()
 {
     char input[2][128] = {
-        "cat Makefile\n",
+        "\n",
         // "python3 test2.py | python3 test.py\n"};
         "cat Makefile | grep obj\n"};
     command_t *cmd;
@@ -65,7 +65,7 @@ int main()
     env = construct_env();
     while (1)
     {
-        printf("\nunix> ");
+        printf("unix> ");
         fgets(input, sizeof(input), stdin);
         int len = strlen(input);
         input[len - 1] = 0;

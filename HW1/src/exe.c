@@ -9,6 +9,11 @@ int match_function(command_t *command)
 {
     while (command)
     {
+        if (command->data.name[0] == 0)
+        {
+            command->bin_command = IS_INVALID_COMMAND;
+            return 0;
+        }
         builtin_command_t *check_builtin = find_builtin_command(command->data.name);
         if (check_builtin)
         {

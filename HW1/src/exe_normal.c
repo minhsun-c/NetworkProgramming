@@ -25,6 +25,7 @@ static int child_command(command_t *command)
     default:
         break;
     }
+    exit(EXIT_SUCCESS);
     return 1;
 }
 
