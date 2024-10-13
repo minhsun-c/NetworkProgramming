@@ -17,3 +17,6 @@ obj/%.o: src/%.c
 
 clean: 
 	rm obj/*.o bin/myshell
+
+number:
+	g++ -o ./bin/number src/number.cpp
