@@ -2,34 +2,34 @@
 #include <stdlib.h>
 
 #include "includes.h"
-#define ISNAME(cmd) (strncmp(name, cmd, len) == 0)
 
 extern env_t *env;
 
 int match_function(command_t *command)
 {
-    char *name = command->data.name;
-    int len = strlen(name);
-    if (ISNAME("printenv"))
+    while (command)
     {
-        myprintenv(env, command->data.parameter[0]);
-        return 1;
-    }
-    else if (ISNAME("setenv"))
-    {
-        env = mysetenv(env, command->data.parameter[0]);
-        return (env != NULL);
-    }
-    else
-    {
-        if (bin_handler(command) == -1)
+        builtin_command_t *check_builtin = find_builtin_command(command->data.name);
+        if (check_builtin)
         {
-            printf(
-                "Invalid Command: [%s]\n",
-                command->data.name);
-            return 0;
+            command->data.fptr = check_builtin->fptr;
+            command->bin_command = IS_BUILTIN_COMMAND;
         }
         else
-            return 1;
+        {
+            check_command(command->data.name, command->data.full_path);
+            if (command->data.full_path[0] == 0)
+            {
+                printf("Invalid Command: [%s]\n", command->data.name);
+                command->bin_command = IS_INVALID_COMMAND;
+                return 0;
+            }
+            else
+            {
+                command->bin_command = IS_BIN_COMMAND;
+            }
+        }
+        command = command->next;
     }
+    return 1;
 }

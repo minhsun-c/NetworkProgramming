@@ -77,7 +77,9 @@ static void print_command(command_t *command)
     {
         printf("command name: %s\n", command->data.name);
         printf("numberpipe: %d\n", command->numberpipe);
+        printf("bin_command: %d\n", command->bin_command);
         printf("param count: %d\n", command->data.param_count);
+        printf("type: %d\n", command->type);
         printf("param:\n");
         for (int i = 0; i < command->data.param_count; i++)
             printf("  %s\n", command->data.parameter[i]);
@@ -95,15 +97,34 @@ command_t *parse_input(char *input)
     if (normal_pipe_exist != -1)
     {
         command_list = split_with_normal_pipe(input, normal_pipe_exist);
+        command_list->type = COMMAND_TYPE_NORMAL_PIPE;
     }
     else if (number_pipe_exist != -1)
     {
         command_list = split_with_number_pipe(input, number_pipe_exist, number_pipe_number);
+        command_list->type = COMMAND_TYPE_NUMBER_PIPE;
     }
     else
     {
         command_list = split_command_name_param(input, -1);
+        if (strncmp(command_list->data.name, "quit", strlen("quit")) == 0)
+            command_list->type = COMMAND_TYPE_QUIT;
+        else
+            command_list->type = COMMAND_TYPE_SINGLE;
     }
+#ifdef DEBUG_MODE_ON
     print_command(command_list);
+#endif // DEBUG_MODE_ON
     return command_list;
+}
+
+void free_command(command_t *cmd)
+{
+    command_t *next;
+    while (cmd)
+    {
+        next = cmd->next;
+        free(cmd);
+        cmd = next;
+    }
 }
