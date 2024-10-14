@@ -14,6 +14,7 @@ static void print_builtin_command()
 
 void myhelp(void *param)
 {
+    (void)param;
     printf("  Commands List:\n");
     print_builtin_command();
     printf("    command in bin\n");
@@ -23,6 +24,7 @@ void myhelp(void *param)
 
 void myquit(void *param)
 {
+    (void)param;
     printf("  Close Shell\n");
     exit(EXIT_SUCCESS);
 }
@@ -76,4 +78,5 @@ int init_builtin_command()
     builtin = insert_builtin_command("setenv", mysetenv);
     builtin = insert_builtin_command("printenv", myprintenv);
     builtin = insert_builtin_command("quit", myquit);
+    return 1;
 }
