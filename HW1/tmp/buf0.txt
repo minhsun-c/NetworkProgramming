@@ -1,0 +1,4 @@
+[PATH] = 
+	./bin
+	/bin
+	/usr/bin
