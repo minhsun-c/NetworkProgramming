@@ -33,9 +33,7 @@ static command_t *split_command_name_param(char *input, int numberpipe)
         return NULL;
     }
     command->next = NULL;
-    command->numberpipe = numberpipe;
-    while (*input == ' ')
-        input++;
+    input = strip_space(input);
     temp = strsep(&input, " ");
     strncpy(command->data.name, temp, strlen(temp));
     for (int i = 0; i < MAX_COMMAND_PARAM_COUNT; i++)
@@ -50,6 +48,13 @@ static command_t *split_command_name_param(char *input, int numberpipe)
             strncpy(command->data.parameter[i], temp, strlen(temp));
             command->data.param_count++;
         }
+    }
+    command->input_numpipe_id = do_numpipe();
+    command->output_numpipe_id = insert_numpipe_info(numberpipe);
+    command->numberpipe = numberpipe;
+    if (command->input_numpipe_id >= 0)
+    {
+        clear_numpipe(command->input_numpipe_id);
     }
     return command;
 }
@@ -76,6 +81,8 @@ static void print_command(command_t *command)
     while (command)
     {
         printf("command name: %s\n", command->data.name);
+        printf("in numberpipe: %d\n", command->input_numpipe_id);
+        printf("out numberpipe: %d\n", command->output_numpipe_id);
         printf("numberpipe: %d\n", command->numberpipe);
         printf("bin_command: %d\n", command->bin_command);
         printf("param count: %d\n", command->data.param_count);
@@ -102,7 +109,12 @@ command_t *parse_input(char *input)
     else if (number_pipe_exist != -1)
     {
         command_list = split_with_number_pipe(input, number_pipe_exist, number_pipe_number);
-        command_list->type = COMMAND_TYPE_NUMBER_PIPE;
+        command_list->type = COMMAND_TYPE_SINGLE;
+        if (command_list->output_numpipe_id == -1)
+        {
+            printf("No more empty numpipe buffer\n");
+            return NULL;
+        }
     }
     else
     {
@@ -112,9 +124,6 @@ command_t *parse_input(char *input)
         else
             command_list->type = COMMAND_TYPE_SINGLE;
     }
-#ifdef DEBUG_MODE_ON
-    print_command(command_list);
-#endif // DEBUG_MODE_ON
     return command_list;
 }
 

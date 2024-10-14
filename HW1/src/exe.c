@@ -5,7 +5,7 @@
 
 extern env_t *env;
 
-int match_function(command_t *command)
+static int match_function(command_t *command)
 {
     while (command)
     {
@@ -36,5 +36,32 @@ int match_function(command_t *command)
         }
         command = command->next;
     }
+    return 1;
+}
+
+int exe_shell(command_t *command)
+{
+    if (match_function(command) == 0)
+    {
+        free_command(command);
+        return -1;
+    }
+    switch (command->type)
+    {
+    case COMMAND_TYPE_SINGLE:
+        single_command_handler(command);
+        break;
+    case COMMAND_TYPE_NORMAL_PIPE:
+        pipe_handler(command);
+        break;
+    case COMMAND_TYPE_QUIT:
+        command->data.fptr(NULL);
+        free_command(command);
+        return -1;
+    default:
+        free_command(command);
+        return -1;
+    }
+    free_command(command);
     return 1;
 }

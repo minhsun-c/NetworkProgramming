@@ -1,8 +1,33 @@
 #include "includes.h"
 
-static int child_command(command_t *command, int fd[], int RorW)
+static int open_read_pipe(command_t *command)
 {
-    // printf("get in %s\n", command->data.name);
+    if (command->input_numpipe_id >= 0)
+    {
+        char filename[128];
+        getcwd(filename, sizeof(filename));
+        sprintf(filename,
+                "%s/tmp/buf%d.txt", filename, command->input_numpipe_id);
+        int in_fd = open(filename, O_RDONLY);
+        if (in_fd == -1)
+        {
+            perror("Input numpipe error");
+            exit(EXIT_FAILURE);
+            return -1;
+        }
+        if (dup2(in_fd, STDIN_FILENO) == -1)
+        {
+            perror("dup2 Error");
+            exit(EXIT_FAILURE);
+            return -1;
+        }
+        close(in_fd);
+    }
+    return 1;
+}
+
+static int build_pipe_fd(int fd[], int RorW)
+{
     if (RorW == PIPE_WRITE_END)
     {
         close(fd[PIPE_READ_END]);
@@ -25,6 +50,14 @@ static int child_command(command_t *command, int fd[], int RorW)
         }
         close(fd[PIPE_READ_END]);
     }
+}
+
+static int child_command(command_t *command, int fd[], int RorW)
+{
+    if (open_read_pipe(command) == -1)
+        return -1;
+    if (build_pipe_fd(fd, RorW) == -1)
+        return -1;
     char *arg[command->data.param_count + 2];
     switch (command->bin_command)
     {
@@ -36,6 +69,7 @@ static int child_command(command_t *command, int fd[], int RorW)
         if (execv(arg[0], arg) < 0)
         {
             perror("EXECV Error");
+            exit(EXIT_FAILURE);
             return -1;
         }
         break;
@@ -53,8 +87,20 @@ static int child_command(command_t *command, int fd[], int RorW)
     return 1;
 }
 
+static int env_command(command_t *command)
+{
+    if (strncmp(command->data.name, "setenv", strlen("setenv")) == 0)
+    {
+        command->data.fptr(command->data.parameter[0]);
+        return 1;
+    }
+    return 0;
+}
+
 static int parent_command(command_t *command, int fd[], int RorW)
 {
+    if (env_command(command))
+        return 1;
     pid_t pid = fork();
     switch (pid)
     {

@@ -43,12 +43,16 @@ static int insert_env_node(env_node_t *list, char *env_data)
     env_node_t *ptr = list;
     while (ptr && ptr->next)
     {
-        if (ptr != list && strncmp(ptr->data, env_data, strlen(env_data)) == 0)
+        if (ptr != list &&
+            strncmp(ptr->data, env_data, strlen(env_data)) == 0)
             return ENV_REDEFINE;
         ptr = ptr->next;
     }
     if (strncmp(ptr->data, env_data, strlen(env_data)) == 0)
+    {
+        printf("Env data redefined\n");
         return ENV_REDEFINE;
+    }
     ptr->next = construct_env_node(env_data);
     return (ptr->next != NULL);
 }
@@ -67,6 +71,7 @@ static int insert_env(char *env_name, char *env_data)
     else
     {
         printf("Insert Env-Variable Failed\n");
+        exit(EXIT_FAILURE);
         return 0;
     }
 }
@@ -108,6 +113,10 @@ static int split_env_name_data(char *input, char **name, char **data)
     if (eqsign != NULL)
     {
         *eqsign = '\0'; // Only modify if eqsign is not NULL
+    }
+    else
+    {
+        return 0;
     }
     *name = input;
     *data = eqsign + 1;

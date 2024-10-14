@@ -3,9 +3,14 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <unistd.h>
-#include <sys/stat.h>
+#include <fcntl.h>
 
-#define ERR_MSG_MEM() perror("Memory Allocation Error")
+#include "numpipe.h"
+// #define DEBUG_MODE_ON
+
+#define ERR_MSG_MEM()                  \
+    perror("Memory Allocation Error"); \
+    exit(EXIT_FAILURE)
 
 #define MAX_COMMAND_NAME_SIZE 10
 #define MAX_COMMAND_PARAM_SIZE 10
@@ -41,6 +46,8 @@ typedef struct command
 {
     command_data_t data;
     int numberpipe;
+    int output_numpipe_id;
+    int input_numpipe_id;
     int bin_command;
     int type;
     struct command *next;
@@ -67,7 +74,7 @@ typedef struct env
 } env_t;
 
 command_t *parse_input(char *input);
-int match_function(command_t *command);
+int exe_shell(command_t *command);
 env_t *construct_env();
 void myprintenv(void *name);
 int bin_handler(command_t *command);

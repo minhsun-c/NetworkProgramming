@@ -1,57 +1,39 @@
 #include <stdio.h>
 #include "includes.h"
+#include "numpipe.h"
 
 #define __TEST_USER_INPUT
+
 env_t *env;
 builtin_command_t *builtin;
-
-#ifdef __TEST_ENV
-
-char *title[] = {"RR", "QQ", "PP"};
-char *str[] = {"hh", "aa", "uu"};
-
-int main()
-{
-    char str[][16] = {
-        "aa=ll", "kk=004", "uui=eed", "uui=eed"};
-    env = construct_env();
-    mysetenv(env, str[2]);
-    mysetenv(env, str[3]);
-    myprintenv(env, NULL);
-    myprintenv(env, "kk");
-    myprintenv(env, "aa");
-}
-#endif // __TEST_ENV
 
 #ifdef __TEST_COMMAND
 int main()
 {
-    char input[2][128] = {
-        "\n",
-        // "python3 test2.py | python3 test.py\n"};
-        "cat Makefile | grep obj\n"};
+    char str[4][128] = {
+        "ls |2\n",
+        "cat Makefile |2\n",
+        "number\n",
+        "number\n"};
+    char input[128];
     command_t *cmd;
     init_builtin_command();
     env = construct_env();
-    for (int i = 0; i < 2; i++)
+    init_numpipe();
+    for (int i = 0; i < 4; i++)
     {
-        int len = strlen(input[i]);
-        input[i][len - 1] = 0;
-        printf("%s\n", input[i]);
-        cmd = parse_input(input[i]);
-        match_function(cmd);
-        switch (cmd->type)
+        strncpy(input, str[i], sizeof(str[i]));
+        printf("unix> ");
+        // fgets(input, sizeof(input), stdin);
+        int len = strlen(input);
+        input[len - 1] = 0;
+        if ((cmd = parse_input(input)) == NULL)
         {
-        case COMMAND_TYPE_SINGLE:
-            single_command_handler(cmd);
-            break;
-        case COMMAND_TYPE_NORMAL_PIPE:
-            pipe_handler(cmd);
-            break;
-        default:
-            break;
+            continue;
         }
-        free_command(cmd);
+        if (exe_shell(cmd) == -1)
+            break;
+        // sleep(50);
     }
 }
 #endif // __TEST_COMMAND
@@ -63,35 +45,22 @@ int main()
     command_t *cmd;
     init_builtin_command();
     env = construct_env();
+    init_numpipe();
     while (1)
     {
         printf("unix> ");
         fgets(input, sizeof(input), stdin);
         int len = strlen(input);
         input[len - 1] = 0;
-        cmd = parse_input(input);
-        if (match_function(cmd) == 0)
+        if (strlen(input) == 0)
+            continue;
+        if ((cmd = parse_input(input)) == NULL)
         {
-            free_command(cmd);
             continue;
         }
-        switch (cmd->type)
-        {
-        case COMMAND_TYPE_SINGLE:
-            single_command_handler(cmd);
+        if (exe_shell(cmd) == -1)
             break;
-        case COMMAND_TYPE_NORMAL_PIPE:
-            pipe_handler(cmd);
-            break;
-        case COMMAND_TYPE_QUIT:
-            cmd->data.fptr(NULL);
-            free_command(cmd);
-            break;
-        default:
-            free_command(cmd);
-            break;
-        }
-        free_command(cmd);
     }
+    close_numpipe_buffer();
 }
 #endif // __TEST_USER_INPUT
