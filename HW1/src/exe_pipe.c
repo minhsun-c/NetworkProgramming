@@ -50,6 +50,7 @@ static int build_pipe_fd(int fd[], int RorW)
         }
         close(fd[PIPE_READ_END]);
     }
+    return 1;
 }
 
 static int child_command(command_t *command, int fd[], int RorW)
@@ -133,4 +134,5 @@ int pipe_handler(command_t *command)
     }
     parent_command(command, fd, PIPE_WRITE_END);
     parent_command(command->next, fd, PIPE_READ_END);
+    return 1;
 }

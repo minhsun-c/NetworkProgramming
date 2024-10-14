@@ -76,6 +76,7 @@ static command_t *split_with_number_pipe(char *input, int numberpipe_id, int num
     return split_command_name_param(input, number);
 }
 
+#ifdef __DEBUG_MODE_ON
 static void print_command(command_t *command)
 {
     while (command)
@@ -93,6 +94,7 @@ static void print_command(command_t *command)
         command = command->next;
     }
 }
+#endif // __DEBUG_MODE_ON
 
 command_t *parse_input(char *input)
 {

@@ -55,6 +55,7 @@ int insert_numpipe_info(int cycle_after)
     return next_empty;
 }
 
+#ifdef __DEBUG_MODE_ON
 static void print_buffer()
 {
     printf("NUMPIPE: \n");
@@ -64,6 +65,7 @@ static void print_buffer()
     }
     printf("\n");
 }
+#endif // __DEBUG_MODE_ON
 
 int do_numpipe()
 {
@@ -83,6 +85,7 @@ int do_numpipe()
 int clear_numpipe(int id)
 {
     numpipe_buffer[id] = EMPTY_BUFFER_INFO;
+    return 1;
 }
 
 int close_numpipe_buffer()
