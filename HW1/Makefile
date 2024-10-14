@@ -19,4 +19,4 @@ clean:
 	rm obj/*.o bin/myshell
 
 number:
-	g++ -o ./bin/number src/number.cpp
+	g++ -o ./bin/number builtin_src/number.cpp
