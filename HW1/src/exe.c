@@ -44,7 +44,7 @@ int exe_shell(command_t *command)
     if (match_function(command) == 0)
     {
         free_command(command);
-        return -1;
+        return 1;
     }
     switch (command->type)
     {
