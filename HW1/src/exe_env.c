@@ -172,9 +172,9 @@ void mysetenv(void *param)
     }
     char *name;
     char *data;
-    if (split_env_name_data((char *)param, &name, &data) == 0)
+    if (param == NULL || split_env_name_data((char *)param, &name, &data) == 0)
     {
-        printf("Equal Sign not Included in setenv param\n");
+        printf("Parameter Incomplete\n");
         return;
     }
     insert_env(name, data);

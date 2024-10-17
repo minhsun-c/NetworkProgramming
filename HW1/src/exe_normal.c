@@ -90,7 +90,20 @@ static int env_command(command_t *command)
 {
     if (strncmp(command->data.name, "setenv", strlen("setenv")) == 0)
     {
-        command->data.fptr(command->data.parameter[0]);
+        size_t slen1 = strlen(command->data.parameter[0]);
+        size_t slen2 = strlen(command->data.parameter[1]);
+        size_t slen = slen1 + slen2 + 2;
+        if (slen2 == 0)
+        {
+            command->data.fptr(NULL);
+        }
+        else
+        {
+            char *param = (char *)malloc(sizeof(char) * slen);
+            sprintf(param, "%s=%s", command->data.parameter[0], command->data.parameter[1]);
+            command->data.fptr(param);
+            free(param);
+        }
         return 1;
     }
     return 0;
