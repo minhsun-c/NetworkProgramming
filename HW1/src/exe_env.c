@@ -107,22 +107,6 @@ static void print_env_with_name(char *env_name)
     }
 }
 
-static int split_env_name_data(char *input, char **name, char **data)
-{
-    char *eqsign = strchr(input, '=');
-    if (eqsign != NULL)
-    {
-        *eqsign = '\0'; // Only modify if eqsign is not NULL
-    }
-    else
-    {
-        return 0;
-    }
-    *name = input;
-    *data = eqsign + 1;
-    return 1;
-}
-
 env_t *construct_env()
 {
     env_t *environ;
