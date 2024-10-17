@@ -93,7 +93,7 @@ static int env_command(command_t *command)
         size_t slen1 = strlen(command->data.parameter[0]);
         size_t slen2 = strlen(command->data.parameter[1]);
         size_t slen = slen1 + slen2 + 2;
-        if (slen2 == 0)
+        if (command->data.param_count != 2)
         {
             command->data.fptr(NULL);
         }
