@@ -170,14 +170,13 @@ void mysetenv(void *param)
     {
         return;
     }
-    char *name;
-    char *data;
-    if (param == NULL || split_env_name_data((char *)param, &name, &data) == 0)
+    command_t *cmd = (command_t *)param;
+    if (cmd->data.param_count != 2)
     {
         printf("Parameter Incomplete\n");
         return;
     }
-    insert_env(name, data);
+    insert_env(cmd->data.parameter[0], cmd->data.parameter[1]);
     return;
 }
 
