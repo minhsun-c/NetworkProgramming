@@ -14,8 +14,8 @@ typedef struct command_data
 {
     char name[MAX_COMMAND_NAME_SIZE];
     char parameter[MAX_COMMAND_PARAM_COUNT][MAX_COMMAND_PARAM_SIZE];
-    char full_path[MAX_FULL_PATH_SIZE];
     int param_count;
+    char full_path[MAX_FULL_PATH_SIZE];
     void (*fptr)(void *);
 } command_data_t;
 
