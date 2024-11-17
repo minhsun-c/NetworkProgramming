@@ -12,10 +12,12 @@ BSRCS2 = $(wildcard bsrc/*.cpp)
 BINS1 = $(patsubst bsrc/%.c, bin/%, $(BSRCS1))
 BINS2 = $(patsubst bsrc/%.cpp, bin/%, $(BSRCS2))
 
-all: tmp bin obj $(BINS1) $(BINS2) myserver
+DIRS = tmp bin obj
+
+all: $(DIRS) $(BINS1) $(BINS2) myserver
 
 myserver: $(OBJS) 
-	$(CC) $(CFLAGS) $(INC) -o $@ $(OBJS)
+	$(CC) $(CFLAGS) $(INC) -o $@ $^
 
 obj/%.o: src/shell/%.c
 	$(CC) $(CFLAGS) $(INC) -c -o $@ $^
@@ -29,14 +31,9 @@ bin/%: bsrc/%.c
 bin/%: bsrc/%.cpp
 	g++ $(INC) -o $@ $^
 
-bin:
-	mkdir bin
-
-obj:
-	mkdir obj
-
-tmp:
-	mkdir tmp
+$(DIRS):
+	mkdir -p $@
 
 clean:
-	rm obj/* bin/* myserver tmp/*
+	rm -rf $(DIRS)
+	rm myserver
